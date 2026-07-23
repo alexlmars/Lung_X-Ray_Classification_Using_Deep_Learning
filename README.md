@@ -10,22 +10,22 @@ The goal of this project was to investigate how custom-built CNN architectures c
 
 The project involved:
 
-* Building and training custom CNN architectures from scratch
-* Experimenting with multiple established CNN architectures
-* Applying transfer learning and fine-tuning
-* Comparing predictive performance and parameter efficiency
-* Evaluating the final model using accuracy, precision, recall, F1-score, and a confusion matrix
+- Building and training custom CNN architectures from scratch
+- Experimenting with multiple established CNN architectures
+- Applying transfer learning and fine-tuning
+- Comparing predictive performance and parameter efficiency
+- Evaluating the final model using accuracy, precision, recall, F1-score, and a confusion matrix
 
 Several pretrained architectures were explored, including:
 
-* AlexNet
-* VGG16
-* ResNet18
-* DenseNet121
-* GoogLeNet
-* ConvNeXt Tiny
-* RegNet
-* EfficientNet-B0
+- AlexNet
+- VGG16
+- ResNet18
+- DenseNet121
+- GoogLeNet
+- ConvNeXt Tiny
+- RegNet
+- EfficientNet-B0
 
 EfficientNet-B0 with fine-tuning produced the strongest overall performance.
 
@@ -33,21 +33,25 @@ EfficientNet-B0 with fine-tuning produced the strongest overall performance.
 
 The dataset contained **3,475 chest X-ray images** across three classes:
 
-| Class     | Images |
-| --------- | -----: |
-| Normal    |  1,250 |
-| Opacity   |  1,125 |
-| Pneumonia |  1,100 |
+| Class | Images |
+|---|---:|
+| Normal | 1,250 |
+| Opacity | 1,125 |
+| Pneumonia | 1,100 |
+
+Example images from the dataset are shown below:
+
+![Example chest X-rays](figures/Augmented%20Chest%20xray%20grey.png)
 
 The data was divided into training, validation, and test sets using a **70/15/15 split**.
 
 Preprocessing included:
 
-* Resizing images to `224 × 224`
-* Converting images to grayscale
-* Replicating grayscale images across three channels for compatibility with pretrained models
-* Pixel normalisation
-* Random horizontal flipping and small rotations for training-data augmentation
+- Resizing images to `224 × 224`
+- Converting images to grayscale
+- Replicating grayscale images across three channels for compatibility with pretrained models
+- Pixel normalisation
+- Random horizontal flipping and small rotations for training-data augmentation
 
 Augmentation was applied only to the training set to improve generalisation while maintaining unbiased validation and test evaluation.
 
@@ -79,99 +83,78 @@ Fine-tuning consistently produced stronger results, with EfficientNet-B0 achievi
 
 ## Model Comparison
 
-| Model               | Training Strategy  | Trainable Parameters | Validation Accuracy |   Macro F1 |
-| ------------------- | ------------------ | -------------------: | ------------------: | ---------: |
-| Original Custom CNN | From scratch       |              306,147 |              87.14% |     0.8738 |
-| Improved Custom CNN | From scratch       |           12,934,259 |              89.64% |     0.8982 |
-| EfficientNet-B0     | Feature extraction |                3,843 |              88.87% |     0.8913 |
-| **EfficientNet-B0** | **Fine-tuning**    |        **3,159,583** |          **94.05%** | **0.9418** |
+| Model | Training Strategy | Trainable Parameters | Validation Accuracy | Macro F1 |
+|---|---|---:|---:|---:|
+| Original Custom CNN | From scratch | 306,147 | 87.14% | 0.8738 |
+| Improved Custom CNN | From scratch | 12,934,259 | 89.64% | 0.8982 |
+| EfficientNet-B0 | Feature extraction | 3,843 | 88.87% | 0.8913 |
+| **EfficientNet-B0** | **Fine-tuning** | **3,159,583** | **94.05%** | **0.9418** |
 
 The improved custom CNN outperformed the original architecture, although this came at a significant increase in model complexity.
 
-Fine-tuned EfficientNet-B0 achieved the strongest validation results while using substantially fewer trainable parameters than the improved custom CNN, demonstrating the effectiveness of transfer learning for this task.
+Fine-tuned EfficientNet-B0 achieved the strongest validation results while using substantially fewer trainable parameters than the improved custom CNN.
+
+## EfficientNet-B0 Fine-Tuning
+
+The training and validation curves for the final EfficientNet-B0 model are shown below:
+
+![EfficientNet-B0 training and validation curves](figures/efficient_b0_fine_tune_graph.png)
+
+The model showed strong training performance while maintaining high validation accuracy across the training process.
 
 ## Final Results
 
 The fine-tuned **EfficientNet-B0** was selected for final evaluation on the unseen test set.
 
-| Metric              | Test Result |
-| ------------------- | ----------: |
-| **Accuracy**        |  **93.30%** |
-| **Macro Precision** |  **0.9352** |
-| **Macro Recall**    |  **0.9337** |
-| **Macro F1-Score**  |  **0.9340** |
+| Metric | Test Result |
+|---|---:|
+| **Accuracy** | **93.30%** |
+| **Macro Precision** | **0.9352** |
+| **Macro Recall** | **0.9337** |
+| **Macro F1-Score** | **0.9340** |
 
-The model demonstrated strong performance across all three classes rather than achieving high accuracy through a single dominant category.
+The model demonstrated strong performance across all three classes.
 
 Pneumonia was classified particularly effectively, achieving an F1-score of **0.9850**.
 
-The primary classification challenge was distinguishing between **Normal** and **Opacity** X-rays, suggesting that more subtle opacity patterns were harder for the model to differentiate from healthy scans.
+The primary classification challenge was distinguishing between **Normal** and **Opacity** X-rays.
+
+### Confusion Matrix
+
+![Confusion matrix for fine-tuned EfficientNet-B0](figures/confusion%20matrix.png)
+
+The confusion matrix shows that most classification errors occurred between the Normal and Opacity categories, while Pneumonia was classified with very high accuracy.
 
 ## Technologies Used
 
-* Python
-* PyTorch
-* Torchvision
-* Convolutional Neural Networks (CNNs)
-* Transfer Learning
-* EfficientNet
-* Image preprocessing and augmentation
-* Scikit-learn
-* Matplotlib
-* Jupyter Notebook / Google Colab
-
-## Repository Structure
-
-```text
-lung-xray-classification/
-├── README.md
-├── notebooks/
-│   └── lung_xray_classification.ipynb
-├── report/
-│   └── report.pdf
-└── requirements.txt
-```
-
-## Running the Project
-
-Clone the repository:
-
-```bash
-git clone <your-repository-url>
-cd lung-xray-classification
-```
-
-Install the required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Open the notebook:
-
-```bash
-jupyter notebook notebooks/lung_xray_classification.ipynb
-```
-
-The dataset is not included in this repository. The notebook may require dataset paths to be updated before running in a local environment.
+- Python
+- PyTorch
+- Torchvision
+- Convolutional Neural Networks
+- Transfer Learning
+- EfficientNet
+- Scikit-learn
+- Matplotlib
+- Jupyter Notebook
+- Google Colab
 
 ## Key Takeaways
 
 This project demonstrated the effectiveness of transfer learning for medical image classification on a relatively limited dataset.
 
-While increasing the complexity of a custom CNN improved its predictive performance, fine-tuning a pretrained EfficientNet-B0 achieved better results with fewer trainable parameters than the improved custom architecture.
+While increasing the complexity of a custom CNN improved its predictive performance, fine-tuning a pretrained EfficientNet-B0 achieved stronger results with fewer trainable parameters than the improved custom architecture.
 
-The project also highlighted the importance of evaluating models beyond accuracy alone. Macro precision, recall, F1-score, and class-level performance were used to assess how reliably the model performed across all three diagnostic categories.
+The project also highlighted the importance of evaluating models beyond accuracy alone. Macro precision, recall, F1-score, and class-level performance were used to assess model behaviour across all three diagnostic categories.
 
 ## Further Improvements
 
-Potential extensions to the project include:
+Potential extensions include:
 
-* Exploring more advanced image augmentation techniques
-* Using learning-rate scheduling and systematic hyperparameter optimisation
-* Investigating class-sensitive loss functions
-* Adding explainability methods such as Grad-CAM to visualise image regions influencing predictions
-* Comparing additional lightweight architectures for deployment efficiency
+- Exploring more advanced image augmentation techniques
+- Using learning-rate scheduling and systematic hyperparameter optimisation
+- Investigating class-sensitive loss functions
+- Adding explainability methods such as Grad-CAM
+- Comparing additional lightweight architectures for deployment efficiency
 
 ## Disclaimer
 
